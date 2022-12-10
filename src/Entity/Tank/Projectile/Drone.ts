@@ -97,13 +97,13 @@ export default class Drone extends Bullet {
             const base = this.baseAccel;
 
             // still a bit inaccurate, works though
-            const unitDist = (delta.x ** 2 + delta.y ** 2) / Drone.MAX_RESTING_RADIUS;
+            let unitDist = (delta.x ** 2 + delta.y ** 2) / Drone.MAX_RESTING_RADIUS;
             if (unitDist <= 1 && this.restCycle) {
                 this.baseAccel /= 6;
-                this.angleVector = Vector.unitize(-delta.y, delta.x);
-                this.positionData.angle = this.angleVector.angle; // += 0.01 + 0.012 * unitDist;
+                this.positionData.angle += 0.01 + 0.012 * unitDist;
+                this.angleVector = Vector.unitVector(this.positionData.angle);
             } else {
-                const offset = Math.atan2(-delta.x, delta.y);
+                const offset = Math.atan2(delta.y, delta.x) + Math.PI / 2
                 delta.x = this.tank.positionData.values.x + Math.cos(offset) * this.tank.physicsData.values.size * 1.2 - this.positionData.values.x;
                 delta.y = this.tank.positionData.values.y + Math.sin(offset) * this.tank.physicsData.values.size * 1.2 - this.positionData.values.y;
                 this.positionData.angle = Math.atan2(delta.y, delta.x);
@@ -119,9 +119,9 @@ export default class Drone extends Bullet {
 
             return;
         } else {
+            this.positionData.angle = Math.atan2(inputs.mouse.y - this.positionData.values.y, inputs.mouse.x - this.positionData.values.x);
             this.angleVector = Vector.unitize(inputs.mouse.x - this.positionData.values.x, inputs.mouse.y - this.positionData.values.y);
-            this.positionData.angle = this.angleVector.angle;
-            this.restCycle = false;
+            this.restCycle = false
         }
         if (this.canControlDrones && inputs.attemptingRepel()) {
             this.positionData.angle += Math.PI; 
