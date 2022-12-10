@@ -21,6 +21,7 @@ import AutoTurret from "../Entity/Tank/AutoTurret";
 import Bullet from "../Entity/Tank/Projectile/Bullet";
 import TankBody from "../Entity/Tank/TankBody";
 import { Entity, EntityStateFlags } from "../Native/Entity";
+import Vector from "../Physics/Vector";
 import { saveToVLog } from "../util";
 import { Stat, StatCount, StyleFlags, Tank } from "./Enums";
 import { getTankByName } from "./TankDefinitions"
@@ -199,7 +200,7 @@ export const commandCallbacks = {
         if (isNaN(x) || isNaN(y) || !Entity.exists(player) || !(player instanceof TankBody)) return;
         player.positionData.x = x;
         player.positionData.y = y;
-        player.setVelocity(0, 0);
+        player.setVelocity(new Vector(1,0), 0);
         player.entityState |= EntityStateFlags.needsCreate | EntityStateFlags.needsDelete;
     },
     game_claim: (client: Client, entityArg: string) => {
