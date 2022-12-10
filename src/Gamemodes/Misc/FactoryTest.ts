@@ -26,6 +26,7 @@ import TankBody from "../../Entity/Tank/TankBody";
 import { Color, PhysicsFlags, StyleFlags, Tank } from "../../Const/Enums";
 import { SandboxShapeManager } from "../Sandbox";
 import Client from "../../Client";
+import Vector from "../../Physics/Vector";
 
 /**
  * Sandbox Gamemode Arena
@@ -70,13 +71,12 @@ export default class FactoryTestArena extends ArenaEntity {
         if (!this.nimdac || !this.nimdac.barrels[0]) {
             return super.spawnPlayer(tank, client);
         }
-
         const {x, y} = this.nimdac.getWorldPosition();
         const barrel = this.nimdac.barrels[0];
-        const shootAngle = barrel.definition.angle + this.nimdac.positionData.values.angle
+        const shootAngle = Vector.unitVector(barrel.definition.angle + this.nimdac.positionData.values.angle);
 
-        tank.positionData.values.x = x + (Math.cos(shootAngle) * barrel.physicsData.values.size * 0.5) - Math.sin(shootAngle) * barrel.definition.offset * this.nimdac.sizeFactor;
-        tank.positionData.values.y = y + (Math.sin(shootAngle) * barrel.physicsData.values.size * 0.5) + Math.cos(shootAngle) * barrel.definition.offset * this.nimdac.sizeFactor;
+        tank.positionData.values.x = x + (shootAngle.x * barrel.physicsData.values.size * 0.5) - shootAngle.y * barrel.definition.offset * this.nimdac.sizeFactor;
+        tank.positionData.values.y = y + (shootAngle.y * barrel.physicsData.values.size * 0.5) + shootAngle.x * barrel.definition.offset * this.nimdac.sizeFactor;
         tank.addAcceleration(shootAngle, 40);
     }
 
