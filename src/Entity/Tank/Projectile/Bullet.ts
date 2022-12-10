@@ -23,6 +23,7 @@ import { HealthFlags, PositionFlags, PhysicsFlags, Stat, StyleFlags } from "../.
 import { TankDefinition } from "../../../Const/TankDefinitions";
 import { BarrelBase } from "../TankBody";
 import { EntityStateFlags } from "../../../Native/Entity";
+import Vector, { VectorAbstract } from "../../../Physics/Vector";
 
 /**
  * The bullet class represents the bullet entity in diep.
@@ -48,8 +49,9 @@ export default class Bullet extends LivingEntity {
     protected usePosAngle = false;
     /** The tank who shot the bullet. */
     protected tank: BarrelBase;
+    public angleVector: Vector;
 
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel.game);
 
         this.tank = tank;
@@ -57,7 +59,7 @@ export default class Bullet extends LivingEntity {
         this.tankDefinition = tankDefinition;
 
         // if (barrel.definition.bullet.type === "drone") throw new TypeError("Invalid bullet type for this class");
-        this.movementAngle = shootAngle;
+        this.angleVector = shootAngle;
         this.barrelEntity = barrel;
         this.spawnTick = barrel.game.tick;
 
@@ -97,9 +99,9 @@ export default class Bullet extends LivingEntity {
 
         const {x, y} = tank.getWorldPosition();
         
-        this.positionData.values.x = x + (Math.cos(shootAngle) * barrel.physicsData.values.size) - Math.sin(shootAngle) * barrel.definition.offset * sizeFactor;
-        this.positionData.values.y = y + (Math.sin(shootAngle) * barrel.physicsData.values.size) + Math.cos(shootAngle) * barrel.definition.offset * sizeFactor;
-        this.positionData.values.angle = shootAngle;
+        this.positionData.values.x = x + (shootAngle.x * barrel.physicsData.values.size) - shootAngle.y * barrel.definition.offset * sizeFactor;
+        this.positionData.values.y = y + (shootAngle.y * barrel.physicsData.values.size) + shootAngle.x * barrel.definition.offset * sizeFactor;
+        this.positionData.values.angle = shootAngle.angle;
     }
 
     /** Extends LivingEntity.onKill - passes kill to the owner. */
@@ -113,7 +115,7 @@ export default class Bullet extends LivingEntity {
     public tick(tick: number) {
         super.tick(tick);
 
-        if (tick === this.spawnTick + 1) this.addAcceleration(this.movementAngle, this.baseSpeed);
+        if (tick === this.spawnTick + 1) this.addAcceleration(this.angleVector, this.baseSpeed);
         else this.maintainVelocity(this.usePosAngle ? this.positionData.values.angle : this.movementAngle, this.baseAccel);
 
         if (tick - this.spawnTick >= this.lifeLength) this.destroy(true);

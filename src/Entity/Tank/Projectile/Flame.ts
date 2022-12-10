@@ -21,9 +21,10 @@ import Bullet from "./Bullet";
 
 import { TankDefinition } from "../../../Const/TankDefinitions";
 import { BarrelBase } from "../TankBody";
+import Vector from "../../../Physics/Vector";
 
 export default class Flame extends Bullet {
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
 
         this.baseSpeed *= 2;

@@ -24,6 +24,7 @@ import { BarrelDefinition, TankDefinition } from "../../../Const/TankDefinitions
 import { Entity } from "../../../Native/Entity";
 import { Inputs } from "../../AI";
 import { BarrelBase } from "../TankBody";
+import Vector from "../../../Physics/Vector";
 
 /**
  * Barrel definition for the skimmer skimmer's barrel.
@@ -74,11 +75,10 @@ export default class Skimmer extends Bullet implements BarrelBase {
     private rotationPerTick = Skimmer.BASE_ROTATION;
 
 
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number, direction: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector, direction: number) {
         super(barrel, tank, tankDefinition, shootAngle);
 
         this.rotationPerTick = direction;
-
         this.cameraEntity = tank.cameraEntity;
 
         this.sizeFactor = this.physicsData.values.size / 50;

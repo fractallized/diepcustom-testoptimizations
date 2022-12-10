@@ -19,7 +19,7 @@
 import * as util from "../util";
 import GameServer from "../Game";
 import Velocity from "../Physics/Velocity";
-import Vector from "../Physics/Vector";
+import Vector, { VectorAbstract } from "../Physics/Vector";
 
 import { PhysicsGroup, PositionGroup, RelationsGroup, StyleGroup } from "../Native/FieldGroups";
 import { Entity } from "../Native/Entity";
@@ -99,6 +99,7 @@ export default class ObjectEntity extends Entity {
     public velocity = new Velocity();
     /** Acceleration used for physics. */
     public accel = new Vector();
+    public angleVector: Vector = new Vector(1,0);
 
     /** For internal spatial hash grid */
     private _queryId: number = -1;
@@ -142,14 +143,15 @@ export default class ObjectEntity extends Entity {
     }
 
     /** Applies acceleration to the object. */
-    public addAcceleration(angle: number, acceleration: number, negateFriction = false) {
+    public addAcceleration(vec: VectorAbstract, acceleration: number, negateFriction = false) {
         if (negateFriction) {
-            const frictionComponent = this.velocity.angleComponent(angle) * .1;
+            // TODO(FIX)
+            //const frictionComponent = this.velocity.angleComponent(angle) * .1;
 
-            acceleration += frictionComponent;
+            acceleration += 0; //frictionComponent;
         }
 
-        this.accel.add(Vector.fromPolar(angle, acceleration));
+        this.accel.add({x: vec.x * acceleration, y: vec.y * acceleration});
     }
 
     /** Sets the velocity of the object. */
@@ -173,7 +175,7 @@ export default class ObjectEntity extends Entity {
         }
 
         // apply friction opposite of current velocity
-        this.addAcceleration(this.velocity.angle, this.velocity.magnitude * -0.1);
+        this.addAcceleration(Vector.unitVector(this.velocity.angle), this.velocity.magnitude * -0.1);
 
         // delta velocity
         this.velocity.add(this.accel);
@@ -238,20 +240,21 @@ export default class ObjectEntity extends Entity {
                 const relB = Math.sin(kbAngle + entity.positionData.values.angle) / entity.physicsData.values.width;
                 if (Math.abs(relA) <= Math.abs(relB)) {
                     if (relB < 0) {
-                        this.addAcceleration(Math.PI * 3 / 2, kbMagnitude);
+                        this.addAcceleration({x: 0, y: -1}, kbMagnitude);
                     } else {
-                        this.addAcceleration(Math.PI * 1 / 2, kbMagnitude);
+                        this.addAcceleration({x: 0, y: 1}, kbMagnitude);
                     }
                 } else {
                     if (relA < 0) {
-                        this.addAcceleration(Math.PI, kbMagnitude);
+                        this.addAcceleration({x: -1, y: 0}, kbMagnitude);
                     } else {
-                        this.addAcceleration(0, kbMagnitude);
+                        this.addAcceleration({x: 1, y: 0}, kbMagnitude);
                     }
                 }
             }
         } else {
-            this.addAcceleration(kbAngle, kbMagnitude);
+            //TODO: FIX
+            this.addAcceleration(Vector.unitVector(kbAngle), kbMagnitude);
         }
     }
 

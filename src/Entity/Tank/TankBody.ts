@@ -36,6 +36,7 @@ import { Inputs } from "../AI";
 import AbstractBoss from "../Boss/AbstractBoss";
 import { ArenaState } from "../../Native/Arena";
 import { maxPlayerLevel } from "../../config";
+import Vector, { VectorAbstract } from "../../Physics/Vector";
 
 /**
  * Abstract type of entity which barrels can connect to.
@@ -75,6 +76,8 @@ export default class TankBody extends LivingEntity implements BarrelBase {
     private _currentTank: Tank | DevTank = Tank.Basic;
     /** Sets tanks to be invulnerable - example, godmode, or AC */
     public isInvulnerable: boolean = false;
+    /* part of removing angles */
+    public angleVector: Vector = new Vector(1,0);
 
     public constructor(game: GameServer, camera: CameraEntity, inputs: Inputs) {
         super(game);
@@ -278,9 +281,9 @@ export default class TankBody extends LivingEntity implements BarrelBase {
 
         if (this.definition.flags.zoomAbility && (this.inputs.flags & InputFlags.rightclick)) {
             if (!(this.cameraEntity.cameraData.values.flags & CameraFlags.usesCameraCoords)) {
-                const angle = Math.atan2(this.inputs.mouse.y - this.positionData.values.y, this.inputs.mouse.x - this.positionData.values.x)
-                this.cameraEntity.cameraData.cameraX = Math.cos(angle) * 1000 + this.positionData.values.x;
-                this.cameraEntity.cameraData.cameraY = Math.sin(angle) * 1000 + this.positionData.values.y;
+                this.angleVector = Vector.unitize(this.inputs.mouse.y - this.positionData.values.y, this.inputs.mouse.x - this.positionData.values.x);
+                this.cameraEntity.cameraData.cameraX = this.angleVector.x * 1000 + this.positionData.values.x;
+                this.cameraEntity.cameraData.cameraY = this.angleVector.y * 1000 + this.positionData.values.y;
                 this.cameraEntity.cameraData.flags |= CameraFlags.usesCameraCoords;
             }
         } else if (this.cameraEntity.cameraData.values.flags & CameraFlags.usesCameraCoords) this.cameraEntity.cameraData.flags ^= CameraFlags.usesCameraCoords;

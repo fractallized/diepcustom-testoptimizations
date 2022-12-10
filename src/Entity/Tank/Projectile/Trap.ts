@@ -24,6 +24,7 @@ import { TankDefinition } from "../../../Const/TankDefinitions";
 import { BarrelBase } from "../TankBody";
 import { DevTank } from "../../../Const/DevTankDefinitions";
 import { PI2 } from "../../../util";
+import Vector from "../../../Physics/Vector";
 
 /**
  * The trap class represents the trap (projectile) entity in diep.
@@ -32,7 +33,7 @@ export default class Trap extends Bullet {
     /** Number of ticks before the trap cant collide with its own team. */
     protected collisionEnd = 0;
 
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
 
         const bulletDefinition = barrel.definition.bullet;

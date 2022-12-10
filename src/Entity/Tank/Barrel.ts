@@ -37,6 +37,7 @@ import CrocSkimmer from "./Projectile/CrocSkimmer";
 import { BarrelAddon, BarrelAddonById } from "./BarrelAddons";
 import { Swarm } from "./Projectile/Swarm";
 import NecromancerSquare from "./Projectile/NecromancerSquare";
+import Vector, { VectorAbstract } from "../../Physics/Vector";
 /**
  * Class that determines when barrels can shoot, and when they can't.
  */
@@ -110,10 +111,12 @@ export default class Barrel extends ObjectEntity {
 
     /** Always existant barrel field group, present on all barrels. */
     public barrelData: BarrelGroup = new BarrelGroup(this);
+    /* new cache vector */
+    public angleVector: Vector;
 
     public constructor(owner: BarrelBase, barrelDefinition: BarrelDefinition) {
         super(owner.game);
-
+        this.angleVector = Vector.unitVector(barrelDefinition.angle);
         this.tank = owner;
         this.definition = barrelDefinition;
 
@@ -131,8 +134,8 @@ export default class Barrel extends ObjectEntity {
 
         this.physicsData.values.width = this.definition.width * sizeFactor;
         this.positionData.values.angle = this.definition.angle + (this.definition.trapezoidDirection);
-        this.positionData.values.x = Math.cos(this.definition.angle) * size / 2 - Math.sin(this.definition.angle) * this.definition.offset * sizeFactor;
-        this.positionData.values.y = Math.sin(this.definition.angle) * size / 2 + Math.cos(this.definition.angle) * this.definition.offset * sizeFactor;
+        this.positionData.values.x = this.angleVector.x * size / 2 - this.angleVector.y * this.definition.offset * sizeFactor;
+        this.positionData.values.y = this.angleVector.y * size / 2 + this.angleVector.x * this.definition.offset * sizeFactor;
 
         // addons are below barrel, use StyleFlags.aboveParent to go above parent
         if (barrelDefinition.addon) {
@@ -151,14 +154,14 @@ export default class Barrel extends ObjectEntity {
         this.barrelData.flags ^= BarrelFlags.hasShot;
 
         // No this is not correct
-        const scatterAngle = (Math.PI / 180) * this.definition.bullet.scatterRate * (Math.random() - .5) * 10;
-        let angle = this.definition.angle + scatterAngle + this.tank.positionData.values.angle;
+        const scatterAngle = Vector.unitVector((Math.PI / 180) * this.definition.bullet.scatterRate * (Math.random() - .5) * 10);
+        const angle = this.angleVector.rotate(scatterAngle).rotate(this.tank.angleVector);
 
         // Map angles unto
         // let e: Entity | null | undefined = this;
         // while (!((e?.position?.flags || 0) & MotionFlags.absoluteRotation) && (e = e.relations?.values.parent) instanceof ObjectEntity) angle += e.position.values.angle;
 
-        this.rootParent.addAcceleration(angle + Math.PI, this.definition.recoil * 2);
+        this.rootParent.addAcceleration(angle.rotate({x: -1, y: 0}), this.definition.recoil * 2);
 
         let tankDefinition: TankDefinition | null = null;
 

@@ -77,7 +77,7 @@ export class AI {
 
     /** Specific rotation of the AI in passive mode. */
     public passiveRotation = Math.random() < .5 ? AI.PASSIVE_ROTATION : -AI.PASSIVE_ROTATION;
-    public rotationVector = new Vector(Math.cos(this.passiveRotation), Math.sin(this.passiveRotation));
+    public rotationVector = Vector.unitVector(this.passiveRotation);
     /** View range in diep units. */
     public viewRange = 1700;
     /** The state of the AI. */
@@ -133,7 +133,7 @@ export class AI {
         const team = this.owner.relationsData.values.team;
 
         // TODO(speed): find a way to speed up
-        if (Entity.exists(this.target)) {
+        if (this.target !== null) {
 
             // If the AI already has a valid target within view distance, it's not necessary to find a new one
 
@@ -153,9 +153,7 @@ export class AI {
         let closestEntity = null;
         let closestDistSq = this.viewRange ** 2;
 
-        for (let i = 0; i < entities.length; ++i) {
-
-            const entity = entities[i];
+        for (const entity of entities) {
 
             if (!(entity instanceof LivingEntity)) continue; // Check if the target is living
 

@@ -34,7 +34,18 @@ export default class Vector implements VectorAbstract {
     public static isFinite(vector: Vector | VectorAbstract) {
         return Number.isFinite(vector.x) && Number.isFinite(vector.y);
     }
-
+    /* Unitizes a vector */
+    public static unitize(x: number, y: number) {
+        const mag = Math.sqrt(x * x + y * y);
+        return new Vector(x / mag, y / mag);
+    } 
+    /* Unitizes an angle */
+    public static unitVector(theta: number) {
+        return new Vector(
+            Math.cos(theta),
+            Math.sin(theta)
+        );
+    }
     /** Converts coordinates from the polar coordinate system to the cartesian coordinate system */
     public static fromPolar(theta: number, distance: number) {
         // TODO(speed):

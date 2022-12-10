@@ -17,6 +17,7 @@
 */
 
 import { TankDefinition } from "../../../Const/TankDefinitions";
+import Vector from "../../../Physics/Vector";
 import Barrel from "../Barrel";
 import { BarrelBase } from "../TankBody";
 import Drone from "./Drone";
@@ -25,7 +26,7 @@ import Drone from "./Drone";
  * The Swarm class represents the swarm (projectile) entity in diep - think BattleShip
  */
 export class Swarm extends Drone {
-    public constructor(barrel: Barrel,  tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel,  tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
         this.ai.viewRange = 850 * tank.sizeFactor * 2;
     }

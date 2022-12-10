@@ -24,6 +24,7 @@ import { BarrelDefinition, TankDefinition } from "../../../Const/TankDefinitions
 import { Entity } from "../../../Native/Entity";
 import { AIState, Inputs } from "../../AI";
 import { BarrelBase } from "../TankBody";
+import Vector from "../../../Physics/Vector";
 
 /**
  * Barrel definition for the factory minion's barrel.
@@ -70,7 +71,7 @@ export default class Minion extends Drone implements BarrelBase {
     /** The inputs for when to shoot or not. (Rocket) */
     public inputs = new Inputs();
 
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
 
         const bulletDefinition = barrel.definition.bullet;

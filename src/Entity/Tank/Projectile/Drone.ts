@@ -24,6 +24,7 @@ import { TankDefinition } from "../../../Const/TankDefinitions";
 import { Entity } from "../../../Native/Entity";
 import { AI, AIState } from "../../AI";
 import { BarrelBase } from "../TankBody";
+import Vector from "../../../Physics/Vector";
 
 /**
  * The drone class represents the drone (projectile) entity in diep.
@@ -41,7 +42,7 @@ export default class Drone extends Bullet {
     /** Cached prop of the definition. */
     protected canControlDrones: boolean;
 
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
 
         const bulletDefinition = barrel.definition.bullet;

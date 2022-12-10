@@ -24,6 +24,7 @@ import { BarrelDefinition, TankDefinition } from "../../../Const/TankDefinitions
 import { Entity } from "../../../Native/Entity";
 import { Inputs } from "../../AI";
 import { BarrelBase } from "../TankBody";
+import Vector from "../../../Physics/Vector";
 
 /**
  * Barrel definition for the skimmer skimmer's barrel.
@@ -68,7 +69,7 @@ export default class CrocSkimmer extends Bullet implements BarrelBase {
     public inputs: Inputs;
 
 
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
 
         this.cameraEntity = tank.cameraEntity;

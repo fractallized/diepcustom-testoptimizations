@@ -25,12 +25,13 @@ import { AI } from "../../AI";
 import { BarrelBase } from "../TankBody";
 import AbstractShape from "../../Shape/AbstractShape";
 import LivingEntity from "../../Live";
+import Vector from "../../../Physics/Vector";
 
 /**
  * The drone class represents the drone (projectile) entity in diep.
  */
 export default class NecromancerSquare extends Drone {
-    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: number) {
+    public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
 
         const bulletDefinition = barrel.definition.bullet;
@@ -64,7 +65,8 @@ export default class NecromancerSquare extends Drone {
 
     /** Given a shape, it will create a necromancer square using stats from the shape */
     public static fromShape(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shape: LivingEntity): NecromancerSquare {
-        const sunchip = new NecromancerSquare(barrel, tank, tankDefinition, shape.positionData.values.angle);
+        //TODO(FIX ANGLE)
+        const sunchip = new NecromancerSquare(barrel, tank, tankDefinition, Vector.unitVector(shape.positionData.values.angle));
         sunchip.physicsData.values.sides = shape.physicsData.values.sides;
         sunchip.physicsData.values.size = shape.physicsData.values.size;
         sunchip.positionData.values.x = shape.positionData.values.x;
