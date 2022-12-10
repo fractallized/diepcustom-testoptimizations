@@ -261,7 +261,7 @@ export default class TankBody extends LivingEntity implements BarrelBase {
         else this.regenPerTick = 0;
 
         super.tick(tick);
-        this.angleVector = Vector.unitize(this.inputs.mouse.x - this.positionData.values.x, this.inputs.mouse.y - this.positionData.values.y);
+        this.angleVector._set(this.inputs.mouse.x - this.positionData.values.x, this.inputs.mouse.y - this.positionData.values.y);
         // If we're currently in a deletion animation
         if (this.deletionAnimation) return;
 

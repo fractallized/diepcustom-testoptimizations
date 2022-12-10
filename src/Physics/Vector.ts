@@ -64,7 +64,10 @@ export default class Vector implements VectorAbstract {
         this.x = vector.x;
         this.y = vector.y;
     }
-
+    public _set(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
     public add(vector: VectorAbstract) {
         this.x += vector.x,
         this.y += vector.y;

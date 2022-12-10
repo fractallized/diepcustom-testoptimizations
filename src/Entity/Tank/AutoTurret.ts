@@ -145,7 +145,7 @@ export default class AutoTurret extends ObjectEntity {
             const {x, y} = this.getWorldPosition();
             let flip = this.owner.inputs.attemptingRepel() ? -1 : 1;
             const deltaPos = {x: (this.owner.inputs.mouse.x - x) * flip, y: (this.owner.inputs.mouse.y - y) * flip}
-            this.angleVector = new Vector(deltaPos.x, deltaPos.y);
+            this.angleVector._set(deltaPos.x, deltaPos.y);
             if (this.ai.targetFilter({x: x + deltaPos.x, y: y + deltaPos.y}) === false) useAI = true;
             else {
                 // if (this.owner.inputs.attemptingRepel()) this.inputs.flags |= InputFlags.rightclick;
@@ -161,7 +161,8 @@ export default class AutoTurret extends ObjectEntity {
             } else {
                 // Uh. Yeah
                 const {x, y} = this.getWorldPosition();
-                this.positionData.angle = Math.atan2(this.ai.inputs.mouse.y - y, this.ai.inputs.mouse.x - x);
+                this.angleVector._set(this.ai.inputs.mouse.x - x, this.ai.inputs.mouse.y - y);
+                this.positionData.angle = this.angleVector.angle;
             }
         }
     }
