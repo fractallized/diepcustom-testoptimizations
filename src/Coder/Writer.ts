@@ -119,8 +119,7 @@ export default class Writer {
         return this.vi(float * 64)
     }
     public degrees(degrees: number) {
-        degrees *= Math.PI / 180
-        return this.vi(degrees * 64)
+        return this.vi(degrees * Math.PI * 0.35555555556)
     }
     public stringNT(str: string) {
         const bytes = Encoder.encode(str + "\x00");
