@@ -325,7 +325,7 @@ export default class Client {
                 if ((flags & InputFlags.rightclick) && !(previousFlags & InputFlags.rightclick) && player.currentTank === DevTank.Developer) {
                     player.positionData.x = this.inputs.mouse.x;
                     player.positionData.y = this.inputs.mouse.y;
-                    player.setVelocity(0, 0);
+                    player.setVelocity(new Vector(1,0), 0);
                     player.entityState |= EntityStateFlags.needsCreate | EntityStateFlags.needsDelete;
                 }
                 if ((flags & InputFlags.switchtank) && !(previousFlags & InputFlags.switchtank)) {

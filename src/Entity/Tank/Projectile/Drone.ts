@@ -125,10 +125,9 @@ export default class Drone extends Bullet {
             this.restCycle = false
         }
 
-
-        
         if (this.canControlDrones && inputs.attemptingRepel()) {
             this.positionData.angle += Math.PI; 
+            this.angleVector = this.angleVector.rotate({x:-1,y:0});
         }
 
         // So that switch tank works, as well as on death
