@@ -155,16 +155,16 @@ export default class ObjectEntity extends Entity {
     }
 
     /** Sets the velocity of the object. */
-    public setVelocity(angle: number, magnitude: number) {
+    public setVelocity(angle: Vector, magnitude: number) {
         // this.a.set(Vector.fromPolar(angle, acceleration));
         this.velocity.setPosition(this.positionData.values);
-        this.velocity.set(Vector.fromPolar(angle, magnitude));
+        this.velocity.set(angle.scale(magnitude));
     }
 
     /** Updates the acceleration. */
-    public maintainVelocity(angle: number, maxSpeed: number) {
+    public maintainVelocity(angleVector: VectorAbstract, maxSpeed: number) {
         // acceleration * 10 = max speed. this relationship is caused by friction
-        this.accel.add(Vector.fromPolar(angle, maxSpeed * 0.1));
+        this.accel.add({x: angleVector.x * maxSpeed * 0.1, y: angleVector.y * maxSpeed * 0.1});
     }
 
     /** Internal physics method used for calculating the current position of the object. */
@@ -212,12 +212,12 @@ export default class ObjectEntity extends Entity {
     /** Applies knockback after hitting `entity` */
     protected receiveKnockback(entity: ObjectEntity) {
         let kbMagnitude = this.physicsData.values.absorbtionFactor * entity.physicsData.values.pushFactor;
-        let kbAngle: number;
+        let kbAngle: Vector;
         let diffY = this.positionData.values.y - entity.positionData.values.y;
         let diffX = this.positionData.values.x - entity.positionData.values.x;
         // Prevents drone stacking etc
-        if (diffX === 0 && diffY === 0) kbAngle = Math.random() * util.PI2;
-        else kbAngle = Math.atan2(diffY, diffX);
+        if (diffX === 0 && diffY === 0) kbAngle = Vector.unitVector(Math.random() * util.PI2);
+        else kbAngle = Vector.unitize(diffX, diffY);
 
         if ((entity.physicsData.values.flags & PhysicsFlags.isSolidWall || entity.physicsData.values.flags & PhysicsFlags.isBase) && !(this.positionData.values.flags & PositionFlags.canMoveThroughWalls))  {
             if (entity.physicsData.values.flags & PhysicsFlags.isSolidWall) {
@@ -232,12 +232,13 @@ export default class ObjectEntity extends Entity {
             } else if ((!(entity.physicsData.values.flags & PhysicsFlags.isBase) || entity.physicsData.values.pushFactor !== 0) && this.relationsData.values.owner instanceof ObjectEntity && !(Entity.exists(this.relationsData.values.team) && this.relationsData.values.team === entity.relationsData.values.team)) {
                 // this is a bit off still. k
                 this.velocity.setPosition(this.positionData.values);
-                this.setVelocity(0, 0);
+                this.setVelocity(new Vector(1,0), 0);
                 this.destroy(true) // Kills off bullets etc
                 return;
             } else {
-                const relA = Math.cos(kbAngle + entity.positionData.values.angle) / entity.physicsData.values.size;
-                const relB = Math.sin(kbAngle + entity.positionData.values.angle) / entity.physicsData.values.width;
+                const kbVector = Vector.unitVector(entity.positionData.values.angle);
+                const relA = (kbAngle.x * kbVector.x - kbAngle.y * kbVector.y) / entity.physicsData.values.size;
+                const relB = (kbAngle.x * kbVector.y + kbAngle.y * kbVector.x) / entity.physicsData.values.width;
                 if (Math.abs(relA) <= Math.abs(relB)) {
                     if (relB < 0) {
                         this.addAcceleration({x: 0, y: -1}, kbMagnitude);
@@ -254,7 +255,7 @@ export default class ObjectEntity extends Entity {
             }
         } else {
             //TODO: FIX
-            this.addAcceleration(Vector.unitVector(kbAngle), kbMagnitude);
+            this.addAcceleration(kbAngle, kbMagnitude);
         }
     }
 

@@ -41,10 +41,10 @@ export default class Drone extends Bullet {
 
     /** Cached prop of the definition. */
     protected canControlDrones: boolean;
-
+    public angleVector: Vector;
     public constructor(barrel: Barrel, tank: BarrelBase, tankDefinition: TankDefinition | null, shootAngle: Vector) {
         super(barrel, tank, tankDefinition, shootAngle);
-
+        this.angleVector = shootAngle;
         const bulletDefinition = barrel.definition.bullet;
 
         this.usePosAngle = true;
@@ -112,7 +112,7 @@ export default class Drone extends Bullet {
                 if (unitDist < 0.5) this.baseAccel /= 3;
                 this.restCycle = (delta.x ** 2 + delta.y ** 2) <= 4 * (this.tank.physicsData.values.size ** 2);
             }
-
+            this.angleVector = Vector.unitVector(this.positionData.angle)
             if (!Entity.exists(this.barrelEntity)) this.destroy();
 
             this.tickMixin(tick);

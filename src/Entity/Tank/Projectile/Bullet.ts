@@ -60,7 +60,7 @@ export default class Bullet extends LivingEntity {
 
         // if (barrel.definition.bullet.type === "drone") throw new TypeError("Invalid bullet type for this class");
         this.angleVector = shootAngle;
-        this.movementAngle = Math.atan2(shootAngle.y, shootAngle.x);
+        this.movementAngle = shootAngle.angle;
         this.barrelEntity = barrel;
         this.spawnTick = barrel.game.tick;
 
@@ -102,7 +102,7 @@ export default class Bullet extends LivingEntity {
         
         this.positionData.values.x = x + (shootAngle.x * barrel.physicsData.values.size) - shootAngle.y * barrel.definition.offset * sizeFactor;
         this.positionData.values.y = y + (shootAngle.y * barrel.physicsData.values.size) + shootAngle.x * barrel.definition.offset * sizeFactor;
-        this.positionData.values.angle = shootAngle.angle;
+        this.positionData.values.angle = this.movementAngle;
     }
 
     /** Extends LivingEntity.onKill - passes kill to the owner. */
@@ -117,7 +117,7 @@ export default class Bullet extends LivingEntity {
         super.tick(tick);
 
         if (tick === this.spawnTick + 1) this.addAcceleration(this.angleVector, this.baseSpeed);
-        else this.maintainVelocity(this.usePosAngle ? this.positionData.values.angle : this.movementAngle, this.baseAccel);
+        else this.maintainVelocity(this.angleVector, this.baseAccel);
 
         if (tick - this.spawnTick >= this.lifeLength) this.destroy(true);
         // TODO(ABC):

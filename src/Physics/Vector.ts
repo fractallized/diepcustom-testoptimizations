@@ -56,6 +56,10 @@ export default class Vector implements VectorAbstract {
         );
     }
     /** Replaces this vector's properties with another vector */
+    public scale(s: number) {
+        this.x *= s; this.y *= s;
+        return this;
+    }
     public set(vector: VectorAbstract) {
         this.x = vector.x;
         this.y = vector.y;
