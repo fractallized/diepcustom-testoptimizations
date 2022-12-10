@@ -84,9 +84,7 @@ export default class Vector implements VectorAbstract {
      * requires a unit vector as input
     */
     public rotate(vector: VectorAbstract) {
-        this.x = this.x * vector.x - this.y * vector.y;
-        this.y = this.y * vector.x + this.x * vector.y;
-        return this;
+        return new Vector(this.x * vector.x - this.y * vector.y, this.y * vector.x + this.x * vector.y);
     }
     public set angle(angle: number) {
         const currentMag = this.magnitude;
