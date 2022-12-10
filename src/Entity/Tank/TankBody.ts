@@ -261,7 +261,7 @@ export default class TankBody extends LivingEntity implements BarrelBase {
         else this.regenPerTick = 0;
 
         super.tick(tick);
-
+        this.angleVector = Vector.unitize(this.inputs.mouse.y - this.positionData.values.y, this.inputs.mouse.x - this.positionData.values.x);
         // If we're currently in a deletion animation
         if (this.deletionAnimation) return;
 
@@ -281,7 +281,6 @@ export default class TankBody extends LivingEntity implements BarrelBase {
 
         if (this.definition.flags.zoomAbility && (this.inputs.flags & InputFlags.rightclick)) {
             if (!(this.cameraEntity.cameraData.values.flags & CameraFlags.usesCameraCoords)) {
-                this.angleVector = Vector.unitize(this.inputs.mouse.y - this.positionData.values.y, this.inputs.mouse.x - this.positionData.values.x);
                 this.cameraEntity.cameraData.cameraX = this.angleVector.x * 1000 + this.positionData.values.x;
                 this.cameraEntity.cameraData.cameraY = this.angleVector.y * 1000 + this.positionData.values.y;
                 this.cameraEntity.cameraData.flags |= CameraFlags.usesCameraCoords;
