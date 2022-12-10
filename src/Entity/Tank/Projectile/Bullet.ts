@@ -60,6 +60,7 @@ export default class Bullet extends LivingEntity {
 
         // if (barrel.definition.bullet.type === "drone") throw new TypeError("Invalid bullet type for this class");
         this.angleVector = shootAngle;
+        this.movementAngle = Math.atan2(shootAngle.y, shootAngle.x);
         this.barrelEntity = barrel;
         this.spawnTick = barrel.game.tick;
 
