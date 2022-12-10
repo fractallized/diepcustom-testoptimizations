@@ -102,7 +102,6 @@ export default class Drone extends Bullet {
                 this.baseAccel /= 6;
                 const seekAngle = Math.atan2(-delta.y, delta.x);
                 if (Math.abs(this.positionData.angle - seekAngle) < 0.1) this.positionData.angle = seekAngle;
-                else if (this.positionData.angle > seekAngle) this.positionData.angle -= 0.1;
                 else this.positionData.angle += 0.1;
                 this.angleVector = Vector.unitVector(this.positionData.angle);
             } else {
