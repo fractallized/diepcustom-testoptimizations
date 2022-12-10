@@ -100,7 +100,10 @@ export default class Drone extends Bullet {
             let unitDist = (delta.x ** 2 + delta.y ** 2) / Drone.MAX_RESTING_RADIUS;
             if (unitDist <= 1 && this.restCycle) {
                 this.baseAccel /= 6;
-                this.positionData.angle += 0.01 + 0.012 * unitDist;
+                const seekAngle = Math.atan2(-delta.y, delta.x);
+                if (Math.abs(this.positionData.angle - seekAngle) < 0.01) this.positionData.angle = seekAngle;
+                else if (this.positionData.angle > seekAngle) this.positionData.angle -= 0.01;
+                else this.positionData.angle += 0.01;
                 this.angleVector = Vector.unitVector(this.positionData.angle);
             } else {
                 const offset = Math.atan2(-delta.x, delta.y);
