@@ -161,7 +161,7 @@ export default class AutoTurret extends ObjectEntity {
             } else {
                 // Uh. Yeah
                 const {x, y} = this.getWorldPosition();
-                this.angleVector._set(this.ai.inputs.mouse.x - x, this.ai.inputs.mouse.y - y);
+                this.angleVector.set(Vector.unitize(this.ai.inputs.mouse.x - x, this.ai.inputs.mouse.y - y));
                 this.positionData.angle = this.angleVector.angle;
             }
         }
