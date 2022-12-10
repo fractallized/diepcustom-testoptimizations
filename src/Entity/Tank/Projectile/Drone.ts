@@ -109,6 +109,7 @@ export default class Drone extends Bullet {
                 if (unitDist < 0.5) this.baseAccel /= 3;
                 this.restCycle = (delta.x ** 2 + delta.y ** 2) <= 4 * (this.tank.physicsData.values.size ** 2);
             }
+            this.angleVector = Vector.unitVector(this.positionData.angle)
             if (!Entity.exists(this.barrelEntity)) this.destroy();
 
             this.tickMixin(tick);
@@ -120,7 +121,6 @@ export default class Drone extends Bullet {
             this.positionData.angle = Math.atan2(inputs.mouse.y - this.positionData.values.y, inputs.mouse.x - this.positionData.values.x);
             this.restCycle = false
         }
-        this.angleVector.set(Vector.unitVector(this.positionData.angle));
         if (this.canControlDrones && inputs.attemptingRepel()) {
             this.positionData.angle += Math.PI; 
             this.angleVector.set(this.angleVector.rotate({x:-1,y:0}));
