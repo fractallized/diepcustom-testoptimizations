@@ -23,6 +23,7 @@ import { Color, PositionFlags, NameFlags } from "../../Const/Enums";
 import { NameGroup } from "../../Native/FieldGroups";
 import { AI } from "../AI";
 import { normalizeAngle, PI2 } from "../../util";
+import Vector from "../../Physics/Vector";
 
 /**
  * Ticks between turns
@@ -113,7 +114,7 @@ export default class AbstractShape extends LivingEntity {
 
         // convert from angle to orbit angle: angle / (10 / 3)
         // convert from orbit angle to angle: orbitAngle * (10 / 3)
-        this.maintainVelocity(this.orbitAngle, this.shapeVelocity);
+        this.maintainVelocity(Vector.unitVector(this.orbitAngle), this.shapeVelocity);
 
         super.tick(tick);
     }
