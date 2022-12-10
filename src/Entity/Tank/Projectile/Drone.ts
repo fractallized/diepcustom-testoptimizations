@@ -106,7 +106,7 @@ export default class Drone extends Bullet {
                 const offset = Vector.unitize(-delta.x, -delta.y);
                 delta.x = this.tank.positionData.values.x + offset.x * this.tank.physicsData.values.size * 1.2 - this.positionData.values.x;
                 delta.y = this.tank.positionData.values.y + offset.y * this.tank.physicsData.values.size * 1.2 - this.positionData.values.y;
-                this.angleVector = offset;
+                this.angleVector = Vector.unitize(delta.x, delta.y);
                 if (unitDist < 0.5) this.baseAccel /= 3;
                 this.restCycle = (delta.x ** 2 + delta.y ** 2) <= 4 * (this.tank.physicsData.values.size ** 2);
             }
