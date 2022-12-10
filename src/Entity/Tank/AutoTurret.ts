@@ -26,7 +26,6 @@ import { AI, AIState, Inputs } from "../AI";
 import { Entity } from "../../Native/Entity";
 import { NameGroup } from "../../Native/FieldGroups";
 import LivingEntity from "../Live";
-import Vector from "../../Physics/Vector";
 
 export const AutoTurretDefinition: BarrelDefinition = {
     angle: 0,
@@ -78,7 +77,6 @@ export default class AutoTurret extends ObjectEntity {
     public reloadTime = 15;
     /** The size of the auto turret base */
     public baseSize: number;
-    public angleVector: Vector = new Vector(1,0);
 
     public constructor(owner: BarrelBase, turretDefinition: BarrelDefinition = AutoTurretDefinition, baseSize: number = 25) {
         super(owner.game);
@@ -145,7 +143,7 @@ export default class AutoTurret extends ObjectEntity {
             const {x, y} = this.getWorldPosition();
             let flip = this.owner.inputs.attemptingRepel() ? -1 : 1;
             const deltaPos = {x: (this.owner.inputs.mouse.x - x) * flip, y: (this.owner.inputs.mouse.y - y) * flip}
-            this.angleVector._set(deltaPos.x, deltaPos.y);
+
             if (this.ai.targetFilter({x: x + deltaPos.x, y: y + deltaPos.y}) === false) useAI = true;
             else {
                 // if (this.owner.inputs.attemptingRepel()) this.inputs.flags |= InputFlags.rightclick;
@@ -161,8 +159,7 @@ export default class AutoTurret extends ObjectEntity {
             } else {
                 // Uh. Yeah
                 const {x, y} = this.getWorldPosition();
-                this.angleVector.set(Vector.unitize(this.ai.inputs.mouse.x - x, this.ai.inputs.mouse.y - y));
-                this.positionData.angle = this.angleVector.angle;
+                this.positionData.angle = Math.atan2(this.ai.inputs.mouse.y - y, this.ai.inputs.mouse.x - x);
             }
         }
     }
